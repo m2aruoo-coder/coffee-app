@@ -1,167 +1,258 @@
-import streamlit as st
-import time
 import random
+import time
+import streamlit as st
 
-# --- 1. إعدادات الهوية البصرية (Drip Branding & CSS) ---
-st.set_page_config(page_title="Drip Trivia Challenge", page_icon="☕")
+# --- 1. إعدادات الصفحة والهوية البصرية لـ Drip ---
+st.set_page_config(
+    page_title="Drip Specialty Coffee - Trivia Challenge",
+    page_icon="☕",
+    layout="centered",
+)
 
-def local_css():
+
+def inject_custom_css():
     st.markdown(
         """
         <style>
-        /* استيراد خط مودرن شبه اللوجو */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-        /* تصفير الهامش وتحديد الخط الرئيسي */
         html, body, [data-testid="stAppViewContainer"] {
             font-family: 'Poppins', sans-serif;
-            color: #1a1a1a;
+            background-color: #f4f9fc;
         }
 
-        /* الخلفية العامة: دمج بين الأبيض وتموجات الأزرق السماوي Drip */
-        [data-testid="stAppViewContainer"] {
-            background-color: #f8fbff;
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(135, 206, 250, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(255, 255, 255, 1) 0px, transparent 50%);
-        }
-
-        /* الهيدر والعنوان */
-        .header-container {
+        /* الهيدر العلوي */
+        .drip-header {
             text-align: center;
-            padding: 20px 0 40px 0;
-            background: linear-gradient(135deg, rgba(135, 206, 250, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
-            border-bottom-left-radius: 50px;
-            border-bottom-right-radius: 50px;
-        }
-
-        .main-title {
-            font-size: 3rem !important;
-            font-weight: 700;
-            color: #333;
-            letter-spacing: -1px;
-            margin-bottom: 0px;
-        }
-        .main-title span {
-            color: #87CEFA; /* Drip Blue */
-            text-shadow: 0 0 10px rgba(135, 206, 250, 0.5);
-        }
-        
-        /* مربع السؤال */
-        .question-box {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 20px;
-            border-left: 8px solid #87CEFA;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding: 20px;
+            background: linear-gradient(135deg, #87CEFA 0%, #00BFFF 100%);
+            color: white;
+            border-radius: 0 0 30px 30px;
             margin-bottom: 25px;
-        }
-        .question-text {
-            font-size: 1.5rem;
-            font-weight: 500;
-            color: #333;
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
         }
 
-        /* أزرار الإجابات (تعديل الـ Widget الافتراضي) */
+        .drip-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 2.2rem;
+            letter-spacing: 1px;
+        }
+
+        /* كارت السؤال */
+        .question-card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            border-right: 6px solid #87CEFA;
+            margin-bottom: 20px;
+        }
+
+        /* أزرار الإجابة */
         div.stButton > button {
             width: 100%;
-            height: 60px;
-            background-color: #f0f8ff; /* Lightest Drip Blue */
-            color: #1E90FF; /* Drip Darker Blue */
-            border-radius: 30px; /* مستديرة بالكامل */
-            border: 2px solid transparent;
-            font-weight: 500;
-            font-size: 1.1rem;
+            border-radius: 25px;
+            height: 50px;
+            background-color: #ffffff;
+            color: #008B8B;
+            border: 2px solid #87CEFA;
+            font-weight: 600;
+            font-size: 1rem;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
+
         div.stButton > button:hover {
-            background-color: #87CEFA; /* Drip Blue */
+            background-color: #87CEFA;
             color: #ffffff;
             border-color: #87CEFA;
-            box-shadow: 0 0 15px rgba(135, 206, 250, 0.6); /* تأثير نيون hover */
-            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(135, 206, 250, 0.4);
         }
 
-        /* تنسيق رسائل النتيجة */
-        .result-box-correct {
+        /* كود الخصم */
+        .promo-box {
+            background: #e6f7ff;
+            border: 2px dashed #00BFFF;
             padding: 20px;
             border-radius: 15px;
-            background-color: #d4edda;
-            color: #155724;
             text-align: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
-        .result-box-wrong {
-            padding: 20px;
-            border-radius: 15px;
-            background-color: #f8d7da;
-            color: #721c24;
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-        }
-        
-        /* التايمر */
-        .stProgress > div > div > div > div {
-            background: linear-gradient(90deg, #FFD700 0%, #FF8C00 100%); /* نيون أصفر */
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-        
         </style>
         """,
-        unsafe_allow_stdio=True,
+        unsafe_allow_html=True,
     )
 
-local_css()
 
-# --- 2. بنك الأسئلة (100 سؤال متنوع وغير متكرر عن القهوة والبارستا) ---
-def get_all_questions():
-    # بنك أسئلة Drip: قهوة، تاريخ، ثقافة، معلومات بارستا
-    raw_questions = [
-        ("ما هي الدولة التي تعتبر الموطن الأصلي للقهوة؟", ["إثيوبيا", "اليمن", "البرازيل", "كولومبيا"], "إثيوبيا"),
-        ("ماذا تعني كلمة 'إسبريسو' بالإيطالية؟", ["السريع", "المضغوط", "المُعَد لحظياً", "القوي"], "المُعَد لحظياً"),
-        ("ما هو نوع القهوة الأكثر استهلاكاً في العالم؟", ["أرابيكا", "روبوستا", "ليبيريكا", "إكسيلسا"], "أرابيكا"),
-        ("أي من هذه المشروبات يحتوي على أكبر كمية حليب؟", ["فلات وايت", "كابتشينو", "لاتيه", "كورتادو"], "لاتيه"),
-        ("كم تبلغ نسبة الكافيين تقريباً في كوب قهوة إسبريسو واحد؟", ["30-50 ملغ", "60-80 ملغ", "100-120 ملغ", "20-40 ملغ"], "60-80 ملغ"),
-        ("ما اسم الأداة التي تستخدم لضغط القهوة المطحونة في الـ Portafilter؟", ["Tamper", "Distributor", "Pitcher", "Grinder"], "Tamper"),
-        ("في أي بلد تم اختراع أول آلة إسبريسو؟", ["فرنسا", "ألمانيا", "إيطاليا", "سويسرا"], "إيطاليا"),
-        ("ما هي القهوة 'المنزوعة الكافيين' بشكل طبيعي تقريباً؟", ["عربيا", "ليبيريكاعاش يا مروان، التفكير في إنك تمنع التكرار (Anti-cheat) وتحط وقت استجابة (Timer) مع توحيد الهوية البصرية (Branding) ده اللي هينقل الفكرة من مجرد مشروع تجريبي لمنتج احترافي جاهز للبيع! 
+inject_custom_css()
 
-عشان نعمل **أسئلة لا نهائية ومختلفة لكل زبون** مع **مؤقت 15 ثانية** وتصميم احترافي:
+# --- 2. بنك الأسئلة المتنوعة ---
+QUESTIONS_BANK = [
+    {
+        "q": "ما هي الدولة التي تعتبر الموطن الأصلي لشجرة القهوة (الأرابيكا)؟",
+        "options": ["إثيوبيا", "اليمن", "البرازيل", "كولومبيا"],
+        "answer": "إثيوبيا",
+    },
+    {
+        "q": "ماذا تعني كلمة 'إسبريسو' باللغة الإيطالية؟",
+        "options": ["السريع", "المُعَد القوي", "المعصور طازجاً", "المركز"],
+        "answer": "المعصور طازجاً",
+    },
+    {
+        "q": "ما الفرق الرئيسي بين الفلات وايت والكابتشينو؟",
+        "options": [
+            "سمك رغوة الحليب",
+            "نوع القهوة",
+            "درجة حرارة الماء",
+            "إضافة السكر",
+        ],
+        "answer": "سمك رغوة الحليب",
+    },
+    {
+        "q": "أي من أدوية التحضير التالية تستخدم التقطير بالتقطير الورقي؟",
+        "options": ["V60", "French Press", "Moka Pot", "Aeropress"],
+        "answer": "V60",
+    },
+    {
+        "q": "ما هي نسبة القهوة إلى الماء المثالية تقريباً في تحضير V60؟",
+        "options": ["1:15", "1:5", "1:30", "1:50"],
+        "answer": "1:15",
+    },
+    {
+        "q": "أي نوع من حبوب القهوة يحتوي على نسبة كافيين أعلى؟",
+        "options": ["روبوستا", "أرابيكا", "ليبيريكا", "إكسيلسا"],
+        "answer": "روبوستا",
+    },
+    {
+        "q": "ما المشروب الذي يتكون من الإسبريسو والماء الساخن فقط؟",
+        "options": ["أمريكانو", "لاتيه", "ماكياتو", "موكا"],
+        "answer": "أمريكانو",
+    },
+    {
+        "q": "درجة الطحن المناسبة لتحضير الإسبريسو تكون:",
+        "options": [" ناعمة جداً", "خشنة", "متوسطة", "خشنة جداً"],
+        "answer": " ناعمة جداً",
+    },
+]
 
----
+# --- 3. إدارة جلسة اللعب (Session State) ---
+if "game_started" not in st.session_state:
+    st.session_state.game_started = False
+if "current_q_idx" not in st.session_state:
+    st.session_state.current_q_idx = 0
+if "score" not in st.session_state:
+    st.session_state.score = 0
+if "used_questions" not in st.session_state:
+    st.session_state.used_questions = []
 
-### 1. إزاي نخلي الأسئلة لا نهائية ومختلفة؟ (Infinite Dynamic Questions)
+# --- 4. الواجهة الرئيسية ---
+st.markdown(
+    """
+    <div class="drip-header">
+        <h1>DRIP SPECIALTY COFFEE</h1>
+        <p style="margin: 5px 0 0 0; opacity: 0.9;">No Sleep, Just Drip ☕</p>
+    </div>
+""",
+    unsafe_allow_html=True,
+)
 
-عندك طريقتين ممتازين:
+if not st.session_state.game_started:
+    st.markdown(
+        """
+        <div style="text-align: center; padding: 20px;">
+            <h3>جاهز تتحدى معلوماتك وتكسب خصمك؟ 🎯</h3>
+            <p>عندك 15 ثانية لكل سؤال.. جاوب صح واكسب عرض كرايف فوراً!</p>
+        </div>
+    """,
+        unsafe_allow_html=True,
+    )
 
-* **الطريقة الأولى (الذكاء الاصطناعي - AI-Generated Queries):**
-  نربط الكود بـ **Gemini API**؛ مع كل دخول للزبون، الكود بيبعت طلب للـ API يولد 3 أسئلة جديدة تماماً عن القهوة، الثقافة العامة، أو الأفلام، بأسلوب مشوق ومعاهم الاختيارات والإجابة الصحيحة. وبكده مفيش زبون هيشوف نفس السؤال مرتين إطلاقاً.
-* **الطريقة الثانية (Dynamic Randomization):**
-  نعمل بنك أسئلة كبير (مثلاً 100+ سؤال) والكود يختار عشوائياً بدون تكرار لنفس الجهاز.
+    if st.button("ابدأ التحدي الآن 🚀"):
+        st.session_state.game_started = True
+        st.session_state.used_questions = random.sample(
+            QUESTIONS_BANK, min(3, len(QUESTIONS_BANK))
+        )
+        st.session_state.current_q_idx = 0
+        st.session_state.score = 0
+        st.session_state.start_time = time.time()
+        st.rerun()
 
----
+else:
+    q_idx = st.session_state.current_q_idx
 
-### 2. التايمر (15 ثانية لكل سؤال)
+    if q_idx < len(st.session_state.used_questions):
+        current_q = st.session_state.used_questions[q_idx]
 
-في Streamlit تقدر تضيف تايمر بـ JavaScript أو باستخدام `st.empty()` مع كاونتر بايثون يعيد تنشيط الصفحة تلقائياً لو الـ 15 ثانية خلصوا، والزبون يتنقل للسؤال اللي بعده أو يخسر التحدي.
+        # التايمر (15 ثانية)
+        elapsed = time.time() - st.session_state.get("start_time", time.time())
+        remaining = max(0, int(15 - elapsed))
 
----
+        st.progress(remaining / 15, text=f"⏱️ الوقت المتبقي: {remaining} ثانية")
 
-### 3. التصميم الاحترافي والـ Branding (Custom CSS)
+        if remaining == 0:
+            st.warning("⏰ انتهى الوقت!")
+            st.session_state.current_q_idx += 1
+            st.session_state.start_time = time.time()
+            time.sleep(1)
+            st.rerun()
 
-عشان نخلي الـ Web App شبه المكان كافيه كرايف ومودرن، بنستخدم **Custom CSS** جوة Streamlit لتغيير:
-* الألوان والألوان الخلفية (Background & Theme colors).
-* نوع الخط وحجمه (Typography).
-* شكل الأزرار والمربعات والأنيميشن الخاص بالتايمر والنتيجة.
+        st.markdown(
+            f"""
+            <div class="question-card">
+                <h4 style="margin:0; color:#333;">السؤال {q_idx + 1} من 3:</h4>
+                <p style="font-size: 1.2rem; margin-top: 10px; font-weight:600;">{current_q['q']}</p>
+            </div>
+        """,
+            unsafe_allow_html=True,
+        )
 
----
+        for opt in current_q["options"]:
+            if st.button(opt, key=f"btn_{q_idx}_{opt}"):
+                if opt == current_q["answer"]:
+                    st.session_state.score += 1
+                st.session_state.current_q_idx += 1
+                st.session_state.start_time = time.time()
+                st.rerun()
 
-### 📸 ابعت صورة المكان!
+    else:
+        # شاشة النتيجة والعرض
+        score = st.session_state.score
+        st.balloons()
 
-ابعت صورة الكافيه أو اللوجو/الهوية البصرية عشان أطلعلك ألوان الـ Hex Codes الدقيقة وأصمملك الـ UI بـ CSS يطابق المكان تماماً. أول ما تبعت الصورة، هكتبلك الكود الكامل المطور بالتايمر والـ AI!
+        st.markdown(
+            f"""
+            <div style="text-align: center;">
+                <h2>🎉 عاش جداً!</h2>
+                <p style="font-size: 1.2rem;">إجاباتك الصحيحة: <b>{score} من 3</b></p>
+            </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        promo_code = f"DRIP-{random.randint(1000, 9999)}"
+
+        if score == 3:
+            offer = "خصم 20% على أي مشروب سيجنتشر + حلو 🍰☕"
+        elif score >= 1:
+            offer = "خصم 10% على طلبك القادم من DRIP ☕"
+        else:
+            offer = "ترقية حجم مشروبك للـ Large مجاناً 🥤"
+
+        st.markdown(
+            f"""
+            <div class="promo-box">
+                <h3 style="color: #008B8B; margin: 0;">عرضك الخاص من DRIP:</h3>
+                <p style="font-size: 1.3rem; font-weight: bold; margin: 10px 0;">{offer}</p>
+                <p style="font-size: 1rem; color: #555;">ورّي الشاشة دي للكاشير واستمتع بعرضك!</p>
+                <div style="background: #ffffff; padding: 10px; border-radius: 10px; display: inline-block; font-weight: bold; font-size: 1.2rem; color: #00BFFF;">
+                    {promo_code}
+                </div>
+            </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
+        if st.button("العب مرة ثانية 🔄"):
+            st.session_state.game_started = False
+            st.rerun()
