@@ -15,39 +15,37 @@ st.set_page_config(
 )
 
 
-# --- Ultra-Premium Cinematic CSS & Glassmorphism Styling ---
+# --- Premium Custom Styling ---
 def inject_ultra_premium_ui():
     st.markdown(
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap');
 
-        /* Dark Luxe Gradient Canvas */
+        /* Dark Luxe Canvas */
         html, body, [data-testid="stAppViewContainer"] {
             font-family: 'Montserrat', 'Cairo', sans-serif;
             background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0f172a 60%, #050914 100%) !important;
             color: #f8fafc !important;
         }
 
-        /* Hide Streamlit Default Components */
         #MainMenu, footer, header {visibility: hidden;}
 
         /* Header UI */
         .brand-header {
             text-align: center;
-            padding: 35px 20px 25px 20px;
+            padding: 30px 20px 20px 20px;
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 0 0 40px 40px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .brand-title {
             font-family: 'Playfair Display', serif;
-            font-size: 3.2rem;
+            font-size: 3rem;
             font-weight: 900;
             letter-spacing: 4px;
             background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
@@ -58,7 +56,7 @@ def inject_ultra_premium_ui():
         }
 
         .brand-subtitle {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             letter-spacing: 6px;
             color: #94a3b8 !important;
             margin-top: 5px;
@@ -70,12 +68,11 @@ def inject_ultra_premium_ui():
         .glass-card {
             background: rgba(255, 255, 255, 0.05) !important;
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 30px;
-            border-radius: 28px;
+            padding: 25px 20px;
+            border-radius: 24px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-align: right;
             direction: rtl;
         }
@@ -83,10 +80,10 @@ def inject_ultra_premium_ui():
         .glass-card h4 {
             font-family: 'Montserrat', sans-serif;
             color: #38bdf8 !important;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin: 0 0 12px 0;
+            margin: 0 0 10px 0;
             font-weight: 800;
             direction: ltr;
             text-align: left;
@@ -95,7 +92,7 @@ def inject_ultra_premium_ui():
         .glass-card p {
             font-family: 'Cairo', sans-serif;
             color: #ffffff !important;
-            font-size: 1.35rem !important;
+            font-size: 1.25rem !important;
             font-weight: 700 !important;
             line-height: 1.6;
             margin: 0;
@@ -106,7 +103,7 @@ def inject_ultra_premium_ui():
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 30px 0;
+            margin: 20px 0;
             position: relative;
         }
 
@@ -136,24 +133,24 @@ def inject_ultra_premium_ui():
 
         .coffee-cup {
             position: relative;
-            width: 120px;
-            height: 130px;
+            width: 110px;
+            height: 120px;
             background: rgba(255, 255, 255, 0.08);
             border: 4px solid rgba(56, 189, 248, 0.6);
-            border-radius: 0 0 50px 50px;
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.2), inset 0 0 15px rgba(0, 0, 0, 0.5);
+            border-radius: 0 0 45px 45px;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
             overflow: hidden;
         }
 
         .coffee-cup::after {
             content: '';
             position: absolute;
-            top: 25px;
-            right: -24px;
-            width: 22px;
-            height: 55px;
+            top: 22px;
+            right: -22px;
+            width: 20px;
+            height: 50px;
             border: 4px solid rgba(56, 189, 248, 0.6);
-            border-radius: 0 18px 18px 0;
+            border-radius: 0 16px 16px 0;
         }
 
         .coffee-liquid {
@@ -162,24 +159,24 @@ def inject_ultra_premium_ui():
             left: 0;
             width: 100%;
             background: linear-gradient(180deg, #c084fc 0%, #603813 30%, #29180c 100%);
-            transition: height 1s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 0 0 44px 44px;
+            transition: height 0.8s ease-in-out;
+            border-radius: 0 0 40px 40px;
             box-shadow: 0 -5px 15px rgba(192, 132, 252, 0.4);
         }
 
-        /* Neon Glow Option Buttons */
+        /* Buttons */
         div.stButton > button {
             width: 100%;
             border-radius: 50px;
-            height: 62px;
+            height: 60px;
             background: rgba(255, 255, 255, 0.04) !important;
             color: #f8fafc !important;
             border: 1px solid rgba(255, 255, 255, 0.15) !important;
             font-family: 'Cairo', sans-serif !important;
             font-weight: 700 !important;
             font-size: 1.1rem !important;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            margin-bottom: 14px;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
             backdrop-filter: blur(10px);
             direction: rtl;
         }
@@ -188,7 +185,6 @@ def inject_ultra_premium_ui():
             background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%) !important;
             color: #ffffff !important;
             border-color: transparent !important;
-            transform: translateY(-3px);
             box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
         }
 
@@ -197,10 +193,10 @@ def inject_ultra_premium_ui():
             background: rgba(255, 255, 255, 0.05) !important;
             backdrop-filter: blur(25px);
             border: 1px solid rgba(56, 189, 248, 0.4);
-            padding: 40px 30px;
-            border-radius: 32px;
+            padding: 35px 25px;
+            border-radius: 28px;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
@@ -208,23 +204,23 @@ def inject_ultra_premium_ui():
             background: rgba(255, 255, 255, 0.04) !important;
             backdrop-filter: blur(25px);
             border: 1px solid rgba(239, 68, 68, 0.4);
-            padding: 40px 30px;
-            border-radius: 32px;
+            padding: 35px 25px;
+            border-radius: 28px;
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .promo-badge {
             background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-            padding: 16px 36px;
-            border-radius: 20px;
+            padding: 14px 32px;
+            border-radius: 18px;
             display: inline-block;
             font-weight: 900;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             color: #ffffff;
             letter-spacing: 3px;
-            margin-top: 20px;
+            margin-top: 15px;
             box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
         }
         </style>
@@ -317,7 +313,7 @@ else:
     if "used_questions" not in st.session_state:
         st.session_state.used_questions = []
 
-    # --- Photorealistic Cup Animation ---
+    # --- Render Animated Cup ---
     def render_steam_cup(score_level):
         fill_pct = int((score_level / 3) * 100)
         st.markdown(
@@ -340,7 +336,7 @@ else:
     if not st.session_state.game_started:
         render_steam_cup(0)
         st.markdown(
-            "<div style='margin-top: 35px;'></div>", unsafe_allow_html=True
+            "<div style='margin-top: 30px;'></div>", unsafe_allow_html=True
         )
 
         if st.button("READY 🚀"):
@@ -350,7 +346,6 @@ else:
             )
             st.session_state.current_q_idx = 0
             st.session_state.score = 0
-            st.session_state.start_time = time.time()
             st.rerun()
 
     # --- Challenge Screen ---
@@ -362,18 +357,7 @@ else:
 
             current_q = st.session_state.used_questions[q_idx]
 
-            # Timer
-            elapsed = time.time() - st.session_state.get(
-                "start_time", time.time()
-            )
-            remaining = max(0, int(15 - elapsed))
-
-            timer_placeholder = st.empty()
-            timer_placeholder.progress(
-                remaining / 15, text=f"⏱️ Time Remaining: {remaining}s"
-            )
-
-            # Arabic Question Box
+            # Question Card
             st.markdown(
                 f"""
                 <div class="glass-card">
@@ -384,27 +368,16 @@ else:
                 unsafe_allow_html=True,
             )
 
-            # Arabic Options
+            # Answer Options
             for opt in current_q["options"]:
                 if st.button(opt, key=f"btn_{q_idx}_{opt}"):
                     if opt == current_q["answer"]:
                         st.session_state.score += 1
                     st.session_state.current_q_idx += 1
-                    st.session_state.start_time = time.time()
                     st.rerun()
-
-            if remaining > 0:
-                time.sleep(1)
-                st.rerun()
-            else:
-                st.session_state.current_q_idx += 1
-                st.session_state.start_time = time.time()
-                time.sleep(0.5)
-                st.rerun()
 
         # --- Reward Screen ---
         else:
-            # Set cookie upon finish
             controller.set("drip_last_played", str(time.time()))
 
             score = st.session_state.score
