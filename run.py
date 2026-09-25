@@ -1,223 +1,176 @@
 import random
-import time
 import streamlit as st
 
-# --- Page Setup ---
+# --- Page Configuration ---
 st.set_page_config(
-    page_title="DRIP | Master Brew Challenge",
+    page_title="DRIP | Coffee Challenge",
     page_icon="☕",
     layout="centered",
     initial_sidebar_state="collapsed",
 )
 
 
-# --- Premium Custom Styling ---
-def inject_ultra_premium_ui():
+# --- Custom DRIP Branding UI CSS ---
+def inject_drip_theme():
     st.markdown(
         """
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Montserrat:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Montserrat:wght@800;900&display=swap');
 
-        /* Dark Luxe Canvas */
+        /* Light Clean Canvas like DRIP Website */
         html, body, [data-testid="stAppViewContainer"] {
-            font-family: 'Montserrat', 'Cairo', sans-serif;
-            background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0f172a 60%, #050914 100%) !important;
-            color: #f8fafc !important;
+            font-family: 'Cairo', 'Montserrat', sans-serif;
+            background-color: #f4f9fd !important;
+            color: #0f172a !important;
         }
 
         #MainMenu, footer, header {visibility: hidden;}
 
-        /* Header UI */
+        /* Top Marquee Banner */
+        .marquee-banner {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 8px 0;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin: -60px -20px 25px -20px;
+        }
+        .marquee-banner span {
+            color: #38bdf8;
+        }
+
+        /* Header UI matching DRIP Logo */
         .brand-header {
             text-align: center;
-            padding: 30px 20px 20px 20px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 0 0 40px 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            margin-bottom: 25px;
+            padding: 10px 0 20px 0;
         }
 
         .brand-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.5rem;
             font-weight: 900;
-            letter-spacing: 4px;
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
+            color: #38bdf8;
+            letter-spacing: -1px;
+            line-height: 0.9;
             text-transform: uppercase;
+            margin: 0;
+            text-shadow: 3px 3px 0px #f472b6;
         }
 
         .brand-subtitle {
-            font-size: 0.8rem;
-            letter-spacing: 6px;
-            color: #94a3b8 !important;
-            margin-top: 5px;
-            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 4px;
+            color: #0f172a;
+            margin-top: 8px;
+            font-weight: 800;
             text-transform: uppercase;
         }
 
-        /* Glassmorphism Quiz Card */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.05) !important;
-            backdrop-filter: blur(20px);
-            padding: 25px 20px;
+        .slogan-tag {
+            background-color: #e0f2fe;
+            color: #0284c7;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        /* Quiz Card */
+        .drip-card {
+            background: #ffffff !important;
+            padding: 30px 25px;
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-            text-align: right;
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+            border: 2px solid #bae6fd;
+            margin-bottom: 25px;
+            text-align: center;
             direction: rtl;
         }
 
-        .glass-card h4 {
+        .drip-card h4 {
             font-family: 'Montserrat', sans-serif;
-            color: #38bdf8 !important;
-            font-size: 0.85rem;
+            color: #f472b6 !important;
+            font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin: 0 0 10px 0;
-            font-weight: 800;
-            direction: ltr;
-            text-align: left;
+            margin: 0 0 12px 0;
+            font-weight: 900;
         }
 
-        .glass-card p {
+        .drip-card p {
             font-family: 'Cairo', sans-serif;
-            color: #ffffff !important;
-            font-size: 1.25rem !important;
-            font-weight: 700 !important;
+            color: #0f172a !important;
+            font-size: 1.35rem !important;
+            font-weight: 800 !important;
             line-height: 1.6;
             margin: 0;
         }
 
-        /* Photorealistic Liquid Coffee Cup with Steam */
-        .cup-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            position: relative;
-        }
-
-        .steam-container {
-            position: absolute;
-            top: -25px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .steam {
-            width: 6px;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            animation: steamAnim 2s infinite ease-out;
-        }
-
-        .steam:nth-child(2) { animation-delay: 0.4s; }
-        .steam:nth-child(3) { animation-delay: 0.8s; }
-
-        @keyframes steamAnim {
-            0% { transform: translateY(0) scaleX(1); opacity: 0; }
-            50% { opacity: 0.6; }
-            100% { transform: translateY(-25px) scaleX(2); opacity: 0; }
-        }
-
-        .coffee-cup {
-            position: relative;
-            width: 110px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 4px solid rgba(56, 189, 248, 0.6);
-            border-radius: 0 0 45px 45px;
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.2);
-            overflow: hidden;
-        }
-
-        .coffee-cup::after {
-            content: '';
-            position: absolute;
-            top: 22px;
-            right: -22px;
-            width: 20px;
-            height: 50px;
-            border: 4px solid rgba(56, 189, 248, 0.6);
-            border-radius: 0 16px 16px 0;
-        }
-
-        .coffee-liquid {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(180deg, #c084fc 0%, #603813 30%, #29180c 100%);
-            transition: height 0.8s ease-in-out;
-            border-radius: 0 0 40px 40px;
-            box-shadow: 0 -5px 15px rgba(192, 132, 252, 0.4);
-        }
-
-        /* Buttons */
+        /* DRIP Styled Buttons */
         div.stButton > button {
             width: 100%;
-            border-radius: 50px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.04) !important;
-            color: #f8fafc !important;
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            border-radius: 16px;
+            height: 58px;
+            background-color: #ffffff !important;
+            color: #0f172a !important;
+            border: 2px solid #e2e8f0 !important;
             font-family: 'Cairo', sans-serif !important;
-            font-weight: 700 !important;
+            font-weight: 800 !important;
             font-size: 1.1rem !important;
-            transition: all 0.3s ease;
-            margin-bottom: 12px;
-            backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+            margin-bottom: 10px;
             direction: rtl;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
 
         div.stButton > button:hover {
-            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%) !important;
+            background-color: #38bdf8 !important;
             color: #ffffff !important;
-            border-color: transparent !important;
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+            border-color: #38bdf8 !important;
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.35);
+            transform: translateY(-2px);
         }
 
-        /* Promo & Status Cards */
+        /* Reward & Result Cards */
         .reward-card {
-            background: rgba(255, 255, 255, 0.05) !important;
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(56, 189, 248, 0.4);
+            background: #ffffff !important;
+            border: 3px solid #38bdf8;
             padding: 35px 25px;
             border-radius: 28px;
             text-align: center;
             margin-top: 15px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-
-        .status-card {
-            background: rgba(255, 255, 255, 0.04) !important;
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            padding: 35px 25px;
-            border-radius: 28px;
-            text-align: center;
-            margin-top: 15px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(56, 189, 248, 0.2);
         }
 
         .promo-badge {
-            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            background: linear-gradient(135deg, #38bdf8 0%, #f472b6 100%);
             padding: 14px 32px;
-            border-radius: 18px;
+            border-radius: 16px;
             display: inline-block;
             font-weight: 900;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: #ffffff;
             letter-spacing: 3px;
+            margin-top: 18px;
+            box-shadow: 0 8px 20px rgba(244, 114, 182, 0.3);
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .status-card {
+            background: #ffffff !important;
+            border: 3px solid #f472b6;
+            padding: 35px 25px;
+            border-radius: 28px;
+            text-align: center;
             margin-top: 15px;
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+            box-shadow: 0 15px 35px rgba(244, 114, 182, 0.15);
         }
         </style>
         """,
@@ -225,9 +178,9 @@ def inject_ultra_premium_ui():
     )
 
 
-inject_ultra_premium_ui()
+inject_drip_theme()
 
-# --- Arabic Question Bank (60 Questions) ---
+# --- Arabic 60 Questions Bank ---
 QUESTIONS_BANK = [
     {
         "q": "ما هي الدولة التي تـُعتبر الموطن الأصلي التاريخي لشجرة القهوة (الأرابيكا)؟",
@@ -611,18 +564,29 @@ QUESTIONS_BANK = [
     },
 ]
 
-# --- Header ---
+# --- Top Banner ---
 st.markdown(
     """
-    <div class="brand-header">
-        <div class="brand-title">DRIP</div>
-        <div class="brand-subtitle">Specialty Coffee Outlets</div>
+    <div class="marquee-banner">
+        RESPECT THE BEAN • TRUST THE DRIP • <span>100% ARABICA</span>
     </div>
 """,
     unsafe_allow_html=True,
 )
 
-# --- Session State ---
+# --- Header ---
+st.markdown(
+    """
+    <div class="brand-header">
+        <div class="brand-title">DRIP</div>
+        <div class="brand-subtitle">Specialty Coffee</div>
+        <div class="slogan-tag">NO SLEEP, JUST DRIP ☕</div>
+    </div>
+""",
+    unsafe_allow_html=True,
+)
+
+# --- Session State Initializations ---
 if "game_started" not in st.session_state:
     st.session_state.game_started = False
 if "current_q_idx" not in st.session_state:
@@ -632,33 +596,19 @@ if "score" not in st.session_state:
 if "used_questions" not in st.session_state:
     st.session_state.used_questions = []
 
-
-# --- Render Animated Cup ---
-def render_steam_cup(score_level):
-    fill_pct = int((score_level / 3) * 100)
+# --- Landing Screen ---
+if not st.session_state.game_started:
     st.markdown(
-        f"""
-        <div class="cup-wrapper">
-            <div class="steam-container">
-                <div class="steam"></div>
-                <div class="steam"></div>
-                <div class="steam"></div>
-            </div>
-            <div class="coffee-cup">
-                <div class="coffee-liquid" style="height: {fill_pct}%;"></div>
-            </div>
+        """
+        <div class="drip-card">
+            <h3 style="color: #0f172a; margin-top: 0; font-weight: 900;">جاهز تتحدى معلوماتك وتكسب خصمك؟ 🎯</h3>
+            <p style="font-size: 1.05rem !important; color: #64748b !important; font-weight: 600 !important;">جاوب 3 أسئلة صح واكسب كود خصم فوري عند طلبك القادم من DRIP Coffee!</p>
         </div>
     """,
         unsafe_allow_html=True,
     )
 
-
-# --- Initial Screen ---
-if not st.session_state.game_started:
-    render_steam_cup(0)
-    st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
-
-    if st.button("READY 🚀"):
+    if st.button("ابدأ التحدي الآن 🚀"):
         st.session_state.game_started = True
         st.session_state.used_questions = random.sample(
             QUESTIONS_BANK, min(3, len(QUESTIONS_BANK))
@@ -667,27 +617,25 @@ if not st.session_state.game_started:
         st.session_state.score = 0
         st.rerun()
 
-# --- Challenge Screen ---
+# --- Quiz Screen ---
 else:
     q_idx = st.session_state.current_q_idx
 
     if q_idx < len(st.session_state.used_questions):
-        render_steam_cup(st.session_state.score)
-
         current_q = st.session_state.used_questions[q_idx]
 
-        # Question Card
+        # Display Question Card
         st.markdown(
             f"""
-            <div class="glass-card">
-                <h4>QUESTION {q_idx + 1} OF 3</h4>
+            <div class="drip-card">
+                <h4>السؤال {q_idx + 1} من 3</h4>
                 <p>{current_q['q']}</p>
             </div>
         """,
             unsafe_allow_html=True,
         )
 
-        # Answer Options
+        # Options Buttons
         for opt in current_q["options"]:
             if st.button(opt, key=f"btn_{q_idx}_{opt}"):
                 if opt == current_q["answer"]:
@@ -695,23 +643,20 @@ else:
                 st.session_state.current_q_idx += 1
                 st.rerun()
 
-    # --- Reward Screen ---
+    # --- Results & Voucher Screen ---
     else:
         score = st.session_state.score
-        render_steam_cup(score)
 
         if score == 3:
             st.balloons()
             promo_code = f"DRIP-{random.randint(1000, 9999)}"
-            offer = "20% OFF YOUR FAVOURITE CRAVING COMBO ☕🍰"
 
             st.markdown(
                 f"""
                 <div class="reward-card">
-                    <h2 style="color: #38bdf8; margin: 0; font-family: 'Playfair Display', serif; font-size: 2.2rem;">PERFECT SCORE! (3/3) 🎉</h2>
-                    <p style="font-size: 0.85rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-top: 15px;">Exclusive Barista Pass</p>
-                    <p style="font-size: 1.3rem; font-weight: 800; color: #ffffff; margin: 12px 0;">{offer}</p>
-                    <p style="font-size: 0.9rem; color: #cbd5e1;">Present this ticket to the Barista to redeem your reward.</p>
+                    <h2 style="color: #38bdf8; margin: 0; font-family: 'Montserrat', sans-serif; font-size: 2rem;">مبروك! النتيجة كاملة (3/3) 🎉</h2>
+                    <p style="font-size: 1.2rem; font-weight: 800; color: #0f172a; margin: 15px 0;">خصم 20% على مشروبك المفضل من DRIP</p>
+                    <p style="font-size: 0.9rem; color: #64748b;">قّم الكود التالي للبارستا أو استخدمه عند الطلب:</p>
                     <div class="promo-badge">
                         {promo_code}
                     </div>
@@ -723,9 +668,9 @@ else:
             st.markdown(
                 f"""
                 <div class="status-card">
-                    <h2 style="color: #ef4444; margin: 0; font-family: 'Playfair Display', serif; font-size: 2rem;">BETTER LUCK NEXT TIME ☕</h2>
-                    <p style="font-size: 1.2rem; color: #ffffff; margin-top: 15px;">Your Score: <b style="color: #ef4444;">{score} of 3</b></p>
-                    <p style="font-size: 0.95rem; color: #94a3b8;">A perfect 3/3 score is required to unlock today's reward.</p>
+                    <h2 style="color: #f472b6; margin: 0; font-family: 'Montserrat', sans-serif; font-size: 1.8rem;">محاولة جيدة! ☕</h2>
+                    <p style="font-size: 1.2rem; color: #0f172a; margin-top: 15px;">نيجتك: <b>{score} من 3</b></p>
+                    <p style="font-size: 0.95rem; color: #64748b;">تحتاج للإجابة على جميع الأسئلة 3/3 بشكل صحيح للحصول على كود الخصم.</p>
                 </div>
             """,
                 unsafe_allow_html=True,
@@ -734,6 +679,6 @@ else:
         st.markdown(
             "<div style='margin-top: 25px;'></div>", unsafe_allow_html=True
         )
-        if st.button("PLAY AGAIN 🔄"):
+        if st.button("جرب مرة أخرى 🔄"):
             st.session_state.game_started = False
             st.rerun()
